@@ -11,14 +11,14 @@ import tests
 import os
 import financial_fundamentals.edgar as edgar
 
-import urlparse
+import urllib.parse
 tests.turn_on_request_caching()
 
 class TestsEdgar(unittest.TestCase):
     def test_get_filing(self):
         filings = edgar.get_filings(symbol='aapl', filing_type='10-Q')
         filing = filings[filings.bisect(date(2013, 1, 23)) - 1]
-        self.assertEqual(urlparse.urlsplit(filing._document._xbrl_url).path.split('/')[-1],
+        self.assertEqual(urllib.parse.urlsplit(filing._document._xbrl_url).path.split('/')[-1],
                          'aapl-20120630.xml')
 
     def test_mmm(self):

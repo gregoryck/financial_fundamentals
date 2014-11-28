@@ -37,14 +37,14 @@ class BuysLowSellsHigh(TradingAlgorithm):
         p_e_ratios = p_e_ratios.dropna()
         p_e_ratios.sort(ascending=False)
         desired_port = self.portfolio_weights(sorted_universe=p_e_ratios)
-        prices = pd.Series({item[0] : item[1]['price'] for item in data.iteritems()})
+        prices = pd.Series({item[0] : item[1]['price'] for item in list(data.items())})
         if self.init:
             positions_value = self.portfolio.starting_cash
         else:
             positions_value = self.portfolio.positions_value + \
                                 self.portfolio.cash
         current_position = pd.Series({item[0] : item[1]['amount'] for item in
-                                       self.portfolio.positions.items()},
+                                       list(self.portfolio.positions.items())},
                                      index=p_e_ratios.index).fillna(0)
         self.rebalance_portfolio(desired_port=pd.concat([desired_port, unknowns]),
                                  prices=prices,
@@ -76,7 +76,7 @@ class BuysLowSellsHigh(TradingAlgorithm):
         desired_amount = np.round(desired_port * positions_value / prices)
         self.last_desired_port = desired_port
         diff_amount = desired_amount - current_amount
-        for stock, order_amount in diff_amount[diff_amount != 0].dropna().iteritems():
+        for stock, order_amount in list(diff_amount[diff_amount != 0].dropna().items()):
             self.order(sid=stock, amount=order_amount)
             
     

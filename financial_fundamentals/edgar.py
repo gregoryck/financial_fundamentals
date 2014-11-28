@@ -4,9 +4,9 @@ Created on Jan 26, 2013
 @author: akittredge
 '''
 import requests
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 import datetime
-from urlparse import urljoin
+from urllib.parse import urljoin
 import blist
 
 import time
@@ -59,7 +59,7 @@ def _get_filing_from_document_page(document_page_url):
     filing_page = get_edgar_soup(url=document_page_url)
     period_of_report_elem = filing_page.find('div', text='Filing Date')
     filing_date = period_of_report_elem.findNext('div', {'class' : 'info'}).text
-    filing_date = datetime.date(*map(int, filing_date.split('-')))
+    filing_date = datetime.date(*list(map(int, filing_date.split('-'))))
     type_tds = filing_page.findAll('td', text='EX-101.INS')
     for type_td in type_tds:
         try:
@@ -97,7 +97,7 @@ def get(url):
         try:
             return requests.get(url).text
         except ConnectionError:
-            print 'ConnectionError, trying again in ', wait
+            print(('ConnectionError, trying again in ', wait))
             time.sleep(wait)
             wait += 1
     else:
